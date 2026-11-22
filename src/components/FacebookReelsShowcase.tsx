@@ -109,18 +109,6 @@ const reelsData: ReelItem[] = [
 ];
 
 export default function FacebookReelsShowcase() {
-  const [activeReel, setActiveReel] = useState<ReelItem | null>(null);
-
-  const handleOpenPlayer = (reel: ReelItem) => {
-    setActiveReel(reel);
-    confetti({
-      particleCount: 40,
-      spread: 60,
-      origin: { y: 0.7 },
-      colors: ["#ec4899", "#f43f5e", "#fda4af"],
-    });
-  };
-
   return (
     <section className="relative z-10 py-20 px-4 max-w-7xl mx-auto" id="reels">
       {/* Section Header */}
@@ -150,7 +138,7 @@ export default function FacebookReelsShowcase() {
           transition={{ delay: 0.2 }}
           className="text-pink-200/75 text-sm sm:text-base max-w-xl mx-auto"
         >
-          আমাদের প্রতিটি সুন্দর ভ্রমণের মুহূর্ত ও আবেগের সংক্ষিপ্ত সিনেমাটিক ক্লিপগুলো উপভোগ করুন
+          আমাদের প্রতিটি সুন্দর ভ্রমণের মুহূর্ত ও আবেগের সংক্ষিপ্ত সিনেমাটিক ক্লিপগুলো উপভোগ করতে কার্ডগুলোতে ক্লিক করুন
         </motion.p>
       </div>
 
@@ -167,9 +155,11 @@ export default function FacebookReelsShowcase() {
             className="group relative rounded-3xl overflow-hidden glass-card border border-pink-500/20 bg-slate-900/90 shadow-xl hover:shadow-2xl hover:shadow-pink-500/20 flex flex-col justify-between transition-all duration-300"
           >
             {/* Top 9:16 Video Style Thumbnail */}
-            <div
-              className="relative aspect-[9/14] w-full overflow-hidden bg-slate-950 cursor-pointer"
-              onClick={() => handleOpenPlayer(item)}
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative aspect-[9/14] w-full overflow-hidden bg-slate-950 cursor-pointer block"
             >
               <img
                 src={item.thumbnail}
@@ -190,7 +180,7 @@ export default function FacebookReelsShowcase() {
 
               {/* Big Play Reel Icon Center */}
               <div className="absolute inset-0 flex items-center justify-center z-10">
-                <div className="w-13 h-13 rounded-full bg-pink-500/80 group-hover:bg-pink-500 group-hover:scale-115 text-white flex items-center justify-center shadow-lg shadow-pink-500/50 transition-all duration-300 border border-white/30 backdrop-blur-sm">
+                <div className="w-13 h-13 rounded-full bg-pink-500/90 group-hover:bg-pink-500 group-hover:scale-115 text-white flex items-center justify-center shadow-lg shadow-pink-500/50 transition-all duration-300 border border-white/30 backdrop-blur-sm">
                   <Play className="w-6 h-6 ml-1 fill-white" />
                 </div>
               </div>
@@ -204,105 +194,23 @@ export default function FacebookReelsShowcase() {
                   {item.title}
                 </h4>
               </div>
-            </div>
+            </a>
 
             {/* Bottom Actions */}
-            <div className="p-3 bg-slate-950/90 border-t border-pink-500/15 flex items-center justify-between gap-2">
-              <button
-                onClick={() => handleOpenPlayer(item)}
-                className="text-xs text-pink-300 hover:text-white font-medium flex items-center gap-1 cursor-pointer transition-colors"
-              >
-                <span>প্লে করুন</span>
-                <span>▶</span>
-              </button>
-
+            <div className="p-3 bg-slate-950/90 border-t border-pink-500/15">
               <a
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-1.5 rounded-lg bg-pink-500/10 hover:bg-pink-500 text-pink-300 hover:text-white transition-all text-xs flex items-center gap-1 font-medium"
-                title="ভিডিও লিংক খুলুন"
+                className="w-full py-2 px-3 rounded-xl bg-pink-500/20 hover:bg-pink-500 text-pink-200 hover:text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm"
               >
-                <span>ভিডিও লিংক</span>
-                <ExternalLink className="w-3 h-3" />
+                <span>ভিডিওটি দেখুন</span>
+                <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </div>
           </motion.div>
         ))}
       </div>
-
-      {/* POPUP REEL EMBED PLAYER MODAL */}
-      <AnimatePresence>
-        {activeReel && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-xl"
-            onClick={() => setActiveReel(null)}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              transition={{ duration: 0.25 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-sm sm:max-w-md max-h-[92vh] overflow-hidden rounded-3xl bg-slate-950 border border-pink-500/40 shadow-2xl flex flex-col"
-            >
-              {/* Header */}
-              <div className="p-4 bg-slate-900 border-b border-pink-500/20 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-pink-400 block">
-                    Short Story Clip
-                  </span>
-                  <h4 className="text-sm font-bold text-white truncate max-w-[260px]">
-                    {activeReel.title}
-                  </h4>
-                </div>
-
-                <button
-                  onClick={() => setActiveReel(null)}
-                  className="p-2 rounded-full bg-slate-800 hover:bg-pink-600 text-white transition-colors cursor-pointer"
-                  aria-label="Close"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Embedded Player Iframe */}
-              <div className="relative aspect-[9/16] w-full bg-black flex items-center justify-center overflow-hidden">
-                {activeReel.type === "ig" ? (
-                  <iframe
-                    src={`https://www.instagram.com/p/${activeReel.reelId}/embed`}
-                    className="w-full h-full border-0"
-                    allowFullScreen
-                  />
-                ) : (
-                  <iframe
-                    src={`https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F${activeReel.reelId}&show_text=false&t=0`}
-                    className="w-full h-full border-0"
-                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
-                )}
-              </div>
-
-              {/* Bottom Footer Info */}
-              <div className="p-4 bg-slate-900/90 border-t border-pink-500/20 flex items-center justify-between">
-                <div className="text-xs text-pink-200/80">
-                  <p className="line-clamp-1">{activeReel.description}</p>
-                </div>
-                <a
-                  href={activeReel.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white text-xs font-medium flex items-center gap-1.5 shrink-0 hover:opacity-90 transition-opacity"
-                >
-                  <span>ফুলস্ক্রিনে দেখুন</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }
