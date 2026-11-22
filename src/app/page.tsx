@@ -13,6 +13,7 @@ import Promises from "@/components/Promises";
 import AudioPlayer from "@/components/AudioPlayer";
 import HeartScene3D from "@/components/HeartScene3D";
 import MotionVideoShowcase from "@/components/MotionVideoShowcase";
+import FacebookReelsShowcase from "@/components/FacebookReelsShowcase";
 
 export default function Home() {
   useEffect(() => {
@@ -136,6 +137,9 @@ export default function Home() {
 
       {/* CINEMATIC MOTION REEL VIDEO */}
       <MotionVideoShowcase />
+
+      {/* FACEBOOK REELS SHOWCASE */}
+      <FacebookReelsShowcase />
 
       {/* PROMISES SECTION */}
       <section className="relative z-10">
