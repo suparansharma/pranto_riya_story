@@ -110,8 +110,24 @@ export default function MotionVideoShowcase() {
             playsInline
             preload="metadata"
             poster="/images/biyer.JPG"
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
+            onPlay={() => {
+              setIsPlaying(true);
+              if (typeof window !== "undefined") {
+                window.dispatchEvent(new Event("bg-video-playing"));
+              }
+            }}
+            onPause={() => {
+              setIsPlaying(false);
+              if (typeof window !== "undefined") {
+                window.dispatchEvent(new Event("bg-video-paused"));
+              }
+            }}
+            onEnded={() => {
+              setIsPlaying(false);
+              if (typeof window !== "undefined") {
+                window.dispatchEvent(new Event("bg-video-paused"));
+              }
+            }}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
           />
 

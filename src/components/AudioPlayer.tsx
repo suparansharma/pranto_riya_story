@@ -1,93 +1,124 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Volume2, VolumeX, Music } from "lucide-react";
+import { Volume2, VolumeX } from "lucide-react";
 
 export default function AudioPlayer() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const isPlayingRef = useRef(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const wasPlayingBeforeVideoRef = useRef(false);
 
-  // Synthesize a romantic, dreamy ambient chime/melody using Web Audio API
-  // This guarantees sound plays even without needing an external mp3 file!
-  const playRomanticMelody = () => {
-    try {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      const ctx = new AudioCtx();
-      audioContextRef.current = ctx;
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
 
-      // Pentatonic romantic notes (C4, D4, E4, G4, A4, C5, D5, E5)
-      const notes = [261.63, 329.63, 392.0, 440.0, 523.25, 659.25, 523.25, 392.0];
-      let step = 0;
+    audio.volume = 0.55;
 
-      const playTone = () => {
-        if (!isPlayingRef.current) return;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
+    // 1. Try playing immediately with sound (unmuted)
+    const playPromise = audio.play();
 
-        osc.type = "sine";
-        const freq = notes[step % notes.length];
-        step++;
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          // Successfully playing with sound!
+          setIsMuted(false);
+        })
+        .catch(() => {
+          // 2. If the browser strictly blocked unmuted sound without gesture:
+          // Immediately auto-play in muted state so audio clock starts running without delay
+          audio.muted = true;
+          audio.play().then(() => {
+            setIsMuted(true);
 
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            // 3. The very millisecond the user touches/scrolls/moves mouse, unmute immediately!
+            const handleUnmuteOnFirstTouch = () => {
+              if (audioRef.current) {
+                audioRef.current.muted = false;
+                audioRef.current.volume = 0.55;
+                setIsMuted(false);
+              }
+              window.removeEventListener("pointerdown", handleUnmuteOnFirstTouch);
+              window.removeEventListener("touchstart", handleUnmuteOnFirstTouch);
+              window.removeEventListener("scroll", handleUnmuteOnFirstTouch);
+              window.removeEventListener("click", handleUnmuteOnFirstTouch);
+            };
 
-        gain.gain.setValueAtTime(0.001, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.3);
-        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 2.2);
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc.start();
-        osc.stop(ctx.currentTime + 2.3);
-
-        const nextDelay = 800 + Math.random() * 400;
-        setTimeout(playTone, nextDelay);
-      };
-
-      isPlayingRef.current = true;
-      setIsPlaying(true);
-      playTone();
-    } catch (e) {
-      console.log("Audio play error", e);
+            window.addEventListener("pointerdown", handleUnmuteOnFirstTouch, { once: true, passive: true });
+            window.addEventListener("touchstart", handleUnmuteOnFirstTouch, { once: true, passive: true });
+            window.addEventListener("scroll", handleUnmuteOnFirstTouch, { once: true, passive: true });
+            window.addEventListener("click", handleUnmuteOnFirstTouch, { once: true, passive: true });
+          }).catch(() => {});
+        });
     }
-  };
 
-  const stopMusic = () => {
-    isPlayingRef.current = false;
-    setIsPlaying(false);
-    if (audioContextRef.current) {
-      audioContextRef.current.close().catch(() => {});
-      audioContextRef.current = null;
-    }
-  };
+    // Video synchronization: auto pause when wedding film plays, resume when film pauses
+    const handleVideoPlaying = () => {
+      if (audioRef.current && !audioRef.current.paused) {
+        wasPlayingBeforeVideoRef.current = true;
+        audioRef.current.pause();
+      }
+    };
 
-  const toggleMusic = () => {
-    if (isPlaying) {
-      stopMusic();
+    const handleVideoPaused = () => {
+      if (wasPlayingBeforeVideoRef.current && audioRef.current) {
+        audioRef.current.play().catch(() => {});
+        wasPlayingBeforeVideoRef.current = false;
+      }
+    };
+
+    window.addEventListener("bg-video-playing", handleVideoPlaying);
+    window.addEventListener("bg-video-paused", handleVideoPaused);
+
+    return () => {
+      window.removeEventListener("bg-video-playing", handleVideoPlaying);
+      window.removeEventListener("bg-video-paused", handleVideoPaused);
+    };
+  }, []);
+
+  const toggleMute = () => {
+    if (!audioRef.current) return;
+    if (audioRef.current.paused) {
+      audioRef.current.muted = false;
+      audioRef.current.play().then(() => setIsMuted(false)).catch(() => {});
     } else {
-      playRomanticMelody();
+      if (isMuted || audioRef.current.muted) {
+        audioRef.current.muted = false;
+        setIsMuted(false);
+      } else {
+        audioRef.current.pause();
+        setIsMuted(true);
+      }
     }
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-40">
-      <button
-        onClick={toggleMusic}
-        className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-slate-900/90 border border-pink-500/40 text-pink-300 backdrop-blur-md shadow-xl hover:scale-105 active:scale-95 transition-all group"
-        title="Background romantic melody"
-      >
-        <span className="p-1 rounded-full bg-pink-500/20 text-pink-400 group-hover:bg-pink-500 group-hover:text-white transition-colors">
-          {isPlaying ? (
-            <Volume2 className="w-4 h-4 animate-pulse text-rose-400" />
-          ) : (
-            <VolumeX className="w-4 h-4" />
-          )}
-        </span>
-        <span className="text-xs font-medium text-pink-200">
-          {isPlaying ? "Music On 🎵" : "Romantic Melody 🎶"}
-        </span>
-      </button>
-    </div>
+    <>
+      <audio
+        ref={audioRef}
+        src="/music/tum_ho_toh.mp3"
+        loop
+        preload="auto"
+        autoPlay
+      />
+
+      <div className="fixed bottom-6 right-6 z-40">
+        <button
+          onClick={toggleMute}
+          className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-slate-900/90 border border-pink-500/40 text-pink-300 backdrop-blur-md shadow-xl hover:scale-105 active:scale-95 transition-all group cursor-pointer"
+          title={isMuted ? "Unmute Music" : "Mute Music"}
+        >
+          <span className="p-1.5 rounded-full bg-pink-500/20 text-pink-400 group-hover:bg-pink-500 group-hover:text-white transition-colors">
+            {!isMuted ? (
+              <Volume2 className="w-4 h-4 animate-pulse text-rose-400" />
+            ) : (
+              <VolumeX className="w-4 h-4 text-pink-400/60" />
+            )}
+          </span>
+          <span className="text-xs font-medium text-pink-200">
+            {!isMuted ? "Tum Ho Toh 🎵" : "Muted 🔇"}
+          </span>
+        </button>
+      </div>
+    </>
   );
 }
