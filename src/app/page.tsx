@@ -11,6 +11,8 @@ import Timeline from "@/components/Timeline";
 import PhotoGallery from "@/components/PhotoGallery";
 import Promises from "@/components/Promises";
 import AudioPlayer from "@/components/AudioPlayer";
+import HeartScene3D from "@/components/HeartScene3D";
+import MotionVideoShowcase from "@/components/MotionVideoShowcase";
 
 export default function Home() {
   useEffect(() => {
@@ -68,9 +70,9 @@ export default function Home() {
           transition={{ duration: 0.7, delay: 0.2 }}
           className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-4"
         >
-          শুভ ১ম বিবাহবার্ষিকী,{" "}
+          Happy 1st Anniversary,{" "}
           <span className="font-romantic text-5xl sm:text-7xl md:text-8xl text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-rose-300 to-pink-500 drop-shadow-[0_4px_24px_rgba(244,63,94,0.4)]">
-            রিয়া!
+            Sharma Ji!
           </span>{" "}
           ❤️
         </motion.h1>
@@ -80,11 +82,20 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-base sm:text-xl text-pink-100/90 max-w-2xl font-light leading-relaxed mb-8"
+          className="text-base sm:text-xl text-pink-100/90 max-w-2xl font-light leading-relaxed mb-4"
         >
           ৩৬৫ দিনের অবিরাম ভালোবাসা, খুনসুটি, আর একসাথে কাটানো মধুর স্মৃতি।
           তুমি আমার জীবনের শ্রেষ্ঠ প্রাপ্তি এবং সবচেয়ে সুন্দর গল্প।
         </motion.p>
+
+        {/* 3D Animated Interactive Heart */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+        >
+          <HeartScene3D />
+        </motion.div>
 
         {/* Hero Interactive Heart Action */}
         <motion.div
@@ -123,6 +134,9 @@ export default function Home() {
         <PhotoGallery />
       </section>
 
+      {/* CINEMATIC MOTION REEL VIDEO */}
+      <MotionVideoShowcase />
+
       {/* PROMISES SECTION */}
       <section className="relative z-10">
         <Promises />
@@ -135,7 +149,7 @@ export default function Home() {
             <Heart className="w-6 h-6 fill-pink-500 text-pink-500" />
           </div>
           <h4 className="text-2xl sm:text-3xl font-bold text-white mb-2 font-romantic">
-            Happy 1st Anniversary, My Dear Riya
+            Happy 1st Anniversary, My Dear Sharma Ji
           </h4>
           <p className="text-sm text-pink-200/70 font-light mb-6">
             &ldquo;তুমি শুধু আমার সহধর্মিণী নও, তুমি আমার প্রতিটি প্রার্থনার উত্তর।&rdquo;

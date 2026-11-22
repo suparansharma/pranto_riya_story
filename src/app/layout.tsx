@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Happy 1st Anniversary Riya ❤️ Forever & Always",
-  description: "Celebrating 1 year of love, laughter, and endless beautiful moments with my beloved wife Riya.",
+  title: "Happy 1st Anniversary Sharma Ji ❤️ Forever & Always",
+  description: "Celebrating 1 year of love, laughter, and endless beautiful moments with my beloved wife Sharma Ji.",
   openGraph: {
-    title: "Happy 1st Anniversary, Riya! ❤️",
+    title: "Happy 1st Anniversary, Sharma Ji! ❤️",
     description: "365 days of endless love, togetherness and wonderful memories.",
   },
 };

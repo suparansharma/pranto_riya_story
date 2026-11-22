@@ -41,7 +41,7 @@ export default function LoveLetter() {
             <Mail className="w-8 h-8" />
           </div>
           <h4 className="text-xl font-semibold text-pink-100 mb-1">
-            আমার প্রিয় রিয়া, চিঠিটি খুলুন ✨
+            আমার প্রিয় Sharma Ji, চিঠিটি খুলুন ✨
           </h4>
           <p className="text-xs text-pink-300/70">
             (এখানে ক্লিক করে চিঠিটি পড়ুন)
@@ -71,7 +71,7 @@ export default function LoveLetter() {
                 <MailOpen className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-xl font-bold text-white">আমার প্রাণের রিয়া,</h4>
+                <h4 className="text-xl font-bold text-white">আমার প্রাণের Sharma Ji,</h4>
                 <p className="text-xs text-pink-300/70">২৬ নভেম্বর • ১ম বিবাহবার্ষিকী</p>
               </div>
             </div>

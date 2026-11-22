@@ -91,7 +91,7 @@ export default function Counter() {
           আমাদের একসাথে কাটানো মিষ্টি সময়
         </h3>
         <p className="text-pink-200/80 text-sm sm:text-base max-w-lg mx-auto mb-8 font-light">
-          প্রতিটি সেকেন্ড, প্রতিটি দিন তোমার পাশে থাকা আমার জীবনের শ্রেষ্ঠ উপহার, রিয়া ❤️
+          প্রতিটি সেকেন্ড, প্রতিটি দিন তোমার পাশে থাকা আমার জীবনের শ্রেষ্ঠ উপহার, Sharma Ji ❤️
         </p>
 
         {/* Counter Units */}

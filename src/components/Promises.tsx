@@ -56,7 +56,7 @@ export default function Promises() {
           আমার দেওয়া ৬টি আজীবনের প্রতিজ্ঞা 💍
         </h3>
         <p className="text-pink-200/70 text-sm sm:text-base max-w-md mx-auto">
-          আমার প্রিয়তমা স্ত্রী রিয়ার কাছে এই প্রতিজ্ঞাগুলো আমার অন্তরের গভীর থেকে
+          আমার প্রিয়তমা স্ত্রী Sharma Ji-র কাছে এই প্রতিজ্ঞাগুলো আমার অন্তরের গভীর থেকে
         </p>
       </div>
 
