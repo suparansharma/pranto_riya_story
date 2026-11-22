@@ -108,6 +108,8 @@ export default function MotionVideoShowcase() {
             src="/videos/biyer_video_edit_by_me.mp4"
             loop
             playsInline
+            preload="metadata"
+            poster="/images/biyer.JPG"
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
