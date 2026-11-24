@@ -104,7 +104,7 @@ export default function AudioPlayer() {
       <div className="fixed bottom-6 right-6 z-40">
         <button
           onClick={toggleMute}
-          className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-slate-900/90 border border-pink-500/40 text-pink-300 backdrop-blur-md shadow-xl hover:scale-105 active:scale-95 transition-all group cursor-pointer"
+          className="flex items-center gap-2.5 px-4 py-2.5   rounded-full bg-slate-900/90 border border-pink-500/40 text-pink-300 backdrop-blur-md shadow-xl hover:scale-105 active:scale-95 transition-all group cursor-pointer"
           title={isMuted ? "Unmute Music" : "Mute Music"}
         >
           <span className="p-1.5 rounded-full bg-pink-500/20 text-pink-400 group-hover:bg-pink-500 group-hover:text-white transition-colors">
