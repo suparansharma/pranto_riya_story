@@ -5,6 +5,13 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Happy 1st Anniversary Sharma Ji ❤️ Forever & Always",
   description: "Celebrating 1 year of love, laughter, and endless beautiful moments with my beloved wife Sharma Ji.",
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/favicon.ico" }
+    ],
+    apple: "/icon.png",
+  },
   openGraph: {
     title: "Happy 1st Anniversary, Sharma Ji! ❤️",
     description: "365 days of endless love, togetherness and wonderful memories.",
