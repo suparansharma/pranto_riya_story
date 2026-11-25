@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
@@ -333,6 +333,22 @@ export default function PhotoGallery() {
 
   const currentItem =
     selectedItemIndex !== null ? filteredItems[selectedItemIndex] : null;
+
+  // Lock background scroll when photo lightbox modal is open
+  useEffect(() => {
+    if (selectedItemIndex !== null) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, [selectedItemIndex]);
 
   return (
     <section className="py-20 px-4 max-w-7xl mx-auto" id="gallery">

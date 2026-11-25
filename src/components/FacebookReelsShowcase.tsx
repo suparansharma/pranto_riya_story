@@ -12,6 +12,8 @@ import {
   X,
   Maximize,
   RotateCcw,
+  Loader2,
+  Heart,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 
@@ -99,14 +101,47 @@ export default function FacebookReelsShowcase() {
   const [activeReel, setActiveReel] = useState<ReelItem | null>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const modalVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  // Lock background body scroll when video modal is open
+  useEffect(() => {
+    if (activeReel) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, [activeReel]);
+
+  // Preload next video buffer on card hover so click starts instantly
+  const handleCardHover = (reel: ReelItem) => {
+    if (typeof window !== "undefined") {
+      const existingLink = document.querySelector(`link[data-video="${reel.id}"]`);
+      if (!existingLink) {
+        const link = document.createElement("link");
+        link.rel = "preload";
+        link.as = "video";
+        link.href = reel.videoSrc;
+        link.setAttribute("data-video", reel.id);
+        document.head.appendChild(link);
+      }
+    }
+  };
 
   const handleOpenPlayer = (reel: ReelItem) => {
     setActiveReel(reel);
+    setIsLoading(true);
     setIsPlaying(true);
     setIsMuted(false);
 
-    // Pause background song when in-site reel starts
+    // Pause background audio when reel plays
     if (typeof window !== "undefined") {
       window.dispatchEvent(new Event("bg-video-playing"));
     }
@@ -124,8 +159,9 @@ export default function FacebookReelsShowcase() {
       modalVideoRef.current.pause();
     }
     setActiveReel(null);
+    setIsLoading(false);
 
-    // Resume background song when modal closed
+    // Resume background audio when reel closes
     if (typeof window !== "undefined") {
       window.dispatchEvent(new Event("bg-video-paused"));
     }
@@ -209,6 +245,8 @@ export default function FacebookReelsShowcase() {
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: idx * 0.08 }}
             whileHover={{ y: -8 }}
+            onMouseEnter={() => handleCardHover(item)}
+            onTouchStart={() => handleCardHover(item)}
             onClick={() => handleOpenPlayer(item)}
             className="group relative rounded-3xl overflow-hidden glass-card border border-pink-500/20 bg-slate-900/90 shadow-xl hover:shadow-2xl hover:shadow-pink-500/20 flex flex-col justify-between transition-all duration-300 cursor-pointer"
           >
@@ -266,7 +304,7 @@ export default function FacebookReelsShowcase() {
       <AnimatePresence>
         {activeReel && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-xl"
+            className="fixed inset-0 z-[999] flex items-center justify-center p-3 sm:p-6 bg-black/95 backdrop-blur-2xl"
             onClick={handleClosePlayer}
           >
             <motion.div
@@ -275,7 +313,7 @@ export default function FacebookReelsShowcase() {
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ duration: 0.25 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-sm sm:max-w-md max-h-[92vh] overflow-hidden rounded-3xl bg-slate-950 border border-pink-500/40 shadow-2xl flex flex-col"
+              className="relative w-full max-w-[360px] sm:max-w-[400px] max-h-[92vh] overflow-hidden rounded-3xl bg-slate-950 border border-pink-500/40 shadow-[0_0_80px_rgba(244,63,94,0.35)] flex flex-col z-[1000]"
             >
               {/* Header */}
               <div className="p-4 bg-slate-900 border-b border-pink-500/20 flex items-center justify-between">
@@ -302,6 +340,19 @@ export default function FacebookReelsShowcase() {
                 className="relative aspect-[9/16] w-full bg-black flex items-center justify-center overflow-hidden group/player cursor-pointer"
                 onClick={togglePlay}
               >
+                {/* Romantic Custom Loading Spinner with pulsing glow */}
+                {isLoading && (
+                  <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm pointer-events-none">
+                    <div className="relative flex items-center justify-center mb-3">
+                      <Loader2 className="w-12 h-12 text-pink-500 animate-spin" />
+                      <Heart className="w-5 h-5 text-rose-400 fill-rose-400 absolute animate-pulse" />
+                    </div>
+                    <span className="text-xs text-pink-200 font-medium tracking-wide bg-black/50 px-3 py-1 rounded-full border border-pink-500/30">
+                      ভিডিও লোড হচ্ছে... ✨
+                    </span>
+                  </div>
+                )}
+
                 <video
                   ref={modalVideoRef}
                   src={activeReel.videoSrc}
@@ -310,13 +361,19 @@ export default function FacebookReelsShowcase() {
                   playsInline
                   preload="auto"
                   poster={activeReel.thumbnail}
-                  onPlay={() => setIsPlaying(true)}
+                  onLoadStart={() => setIsLoading(true)}
+                  onWaiting={() => setIsLoading(true)}
+                  onCanPlay={() => setIsLoading(false)}
+                  onPlaying={() => {
+                    setIsLoading(false);
+                    setIsPlaying(true);
+                  }}
                   onPause={() => setIsPlaying(false)}
                   className="w-full h-full object-cover"
                 />
 
                 {/* Big Center Play Icon when paused */}
-                {!isPlaying && (
+                {!isPlaying && !isLoading && (
                   <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
                     <div className="w-16 h-16 rounded-full bg-pink-500/90 text-white flex items-center justify-center shadow-xl">
                       <Play className="w-8 h-8 ml-1 fill-white" />
